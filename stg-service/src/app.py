@@ -9,7 +9,6 @@ from stg_loader.repository.stg_repository import StgRepository
 
 app = Flask(__name__)
 
-
 # Заводим endpoint для проверки, поднялся ли сервис.
 # Обратиться к нему можно будет GET-запросом по адресу localhost:5000/health.
 # Если в ответе будет healthy - сервис поднялся и работает.
@@ -35,6 +34,7 @@ if __name__ == '__main__':
         batch_size=100,
         logger=app.logger
     )
+
     # Запускаем процессор в бэкграунде.
     # BackgroundScheduler будет по расписанию вызывать функцию run нашего обработчика(SampleMessageProcessor).
     scheduler = BackgroundScheduler()

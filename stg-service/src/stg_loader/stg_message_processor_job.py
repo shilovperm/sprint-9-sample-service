@@ -6,7 +6,7 @@ from typing import List, Dict
 
 from lib.kafka_connect import KafkaConsumer, KafkaProducer
 from lib.redis import RedisClient
-from repository.stg_repository import StgRepository
+from stg_loader.repository import StgRepository
 
 class StgMessageProcessor:
     def __init__(self,
@@ -29,11 +29,14 @@ class StgMessageProcessor:
         self._logger.info(f"{datetime.utcnow()}: START")
 
         for _ in range(self._batch_size):
+            
             msg = self._consumer.consume()
+
             if not msg:
                 break
 
             self._logger.info(f"{datetime.utcnow()}: Message received")
+            self._logger.info(f"{datetime.utcnow()}: -----------msg:{msg}")
 
             order = msg['payload']
             self._stg_repository.order_events_insert(
@@ -43,6 +46,7 @@ class StgMessageProcessor:
                 json.dumps(order))
 
             user_id = order["user"]["id"]
+            self._logger.info(f"{datetime.utcnow()}: -----------user_id:{user_id}")
             user = self._redis.get(user_id)
             user_name = user["name"]
             user_login = user["login"]
